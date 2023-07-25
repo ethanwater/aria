@@ -55,4 +55,5 @@ fn main() -> std::io::Result<()> {
     let x = Path::new("/Users/ethan/Music/LiquidDNB");
     let playlist = playlist(x);
     play(playlist)?;
+    Ok(())
 }
