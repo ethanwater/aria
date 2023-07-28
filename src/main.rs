@@ -1,3 +1,4 @@
+use rand::prelude::*;
 use std::path::Path;
 use std::{fs, io};
 
@@ -16,7 +17,23 @@ where
     Ok(playlist)
 }
 
-fn play(playlist: Vec<String>) {
+fn play_default(playlist: Vec<String>) {
+    let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
+    let sink = rodio::Sink::try_new(&handle).unwrap();
+
+    for audio in playlist.iter() {
+        let file = fs::File::open(audio).unwrap();
+        sink.append(rodio::Decoder::new(io::BufReader::new(file)).unwrap());
+
+        println!("now playing: {audio}");
+        sink.sleep_until_end();
+    }
+}
+
+fn play_shuffle(playlist: &mut Vec<String>) {
+    let mut rng = rand::thread_rng();
+    playlist.shuffle(&mut rng);
+
     let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
     let sink = rodio::Sink::try_new(&handle).unwrap();
 
@@ -31,8 +48,8 @@ fn play(playlist: Vec<String>) {
 
 fn main() -> io::Result<()> {
     let root = Path::new("/Users/ethan/Music/LiquidDNB");
-    let playlist = playlist(root)?;
-    play(playlist);
+    let mut playlist = playlist(root)?;
+    play_shuffle(&mut playlist);
 
     Ok(())
 }
