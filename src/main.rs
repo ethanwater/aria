@@ -17,6 +17,7 @@ where
     Ok(playlist)
 }
 
+#[allow(dead_code)]
 fn play_default(playlist: Vec<String>) {
     let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
     let sink = rodio::Sink::try_new(&handle).unwrap();
@@ -30,6 +31,7 @@ fn play_default(playlist: Vec<String>) {
     }
 }
 
+#[allow(dead_code)]
 fn play_shuffle(playlist: &mut Vec<String>) {
     let mut rng = rand::thread_rng();
     playlist.shuffle(&mut rng);
