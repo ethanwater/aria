@@ -51,7 +51,7 @@ fn play_shuffle(playlist: &mut Vec<String>) {
 }
 
 fn main() -> io::Result<()> {
-    let root = Path::new("/Users/ethan/Music/LiquidDNB");
+    let root = Path::new("music/dnb");
     let mut playlist = playlist(root)?;
     let _ = play_default(&mut playlist);
 
