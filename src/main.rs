@@ -18,7 +18,7 @@ where
 }
 
 #[allow(dead_code)]
-fn play_default(playlist: Vec<String>) {
+fn play_default(playlist: &mut Vec<String>) {
     let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
     let sink = rodio::Sink::try_new(&handle).unwrap();
 
@@ -26,7 +26,8 @@ fn play_default(playlist: Vec<String>) {
         let file = fs::File::open(audio).unwrap();
         sink.append(rodio::Decoder::new(io::BufReader::new(file)).unwrap());
 
-        println!("now playing: {audio}");
+        let audio_name = Path::new(audio).file_name().unwrap().to_str().unwrap();
+        println!("now playing: {audio_name}");
         sink.sleep_until_end();
     }
 }
@@ -43,7 +44,8 @@ fn play_shuffle(playlist: &mut Vec<String>) {
         let file = fs::File::open(audio).unwrap();
         sink.append(rodio::Decoder::new(io::BufReader::new(file)).unwrap());
 
-        println!("now playing: {audio}");
+        let audio_name = Path::new(audio).file_name().unwrap().to_str().unwrap();
+        println!("now playing: {audio_name}");
         sink.sleep_until_end();
     }
 }
@@ -51,7 +53,7 @@ fn play_shuffle(playlist: &mut Vec<String>) {
 fn main() -> io::Result<()> {
     let root = Path::new("/Users/ethan/Music/LiquidDNB");
     let mut playlist = playlist(root)?;
-    play_shuffle(&mut playlist);
+    let _ = play_default(&mut playlist);
 
     Ok(())
 }
