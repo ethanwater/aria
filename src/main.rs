@@ -69,7 +69,7 @@ fn play_shuffle(playlist: &mut Vec<String>, sink: &Sink) -> io::Result<()> {
 }
 
 //TODO: fix this cursed function
-fn play_song(playlist: &mut Vec<String>, sink: &Sink) -> io::Result<()> {
+fn show_tracks(playlist: &mut Vec<String>, sink: &Sink) -> io::Result<()> {
     playlist.sort();
     for audio in playlist.iter() {
         if Path::new(audio).is_dir() {
@@ -79,7 +79,7 @@ fn play_song(playlist: &mut Vec<String>, sink: &Sink) -> io::Result<()> {
                 "ALBUM: {}",
                 album_path.file_name().unwrap().to_str().unwrap()
             );
-            play_song(&mut album, sink)?;
+            show_tracks(&mut album, sink)?;
         }
         println!(
             "{}",
@@ -97,7 +97,7 @@ fn main() -> io::Result<()> {
     let sink = rodio::Sink::try_new(&handle).unwrap();
 
     //let _ = play_shuffle(&mut playlist, &sink);
-    let _ = play_song(&mut playlist, &sink);
+    //let _ = show_tracks(&mut playlist, &sink);
 
     Ok(())
 }
