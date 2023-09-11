@@ -35,6 +35,7 @@ where
     Ok(playlist)
 }
 
+#[allow(dead_code)]
 fn play_default(playlist: &mut Vec<String>, sink: &Sink) {
     playlist.sort();
     for audio in playlist.iter() {
@@ -47,6 +48,7 @@ fn play_default(playlist: &mut Vec<String>, sink: &Sink) {
     }
 }
 
+#[allow(dead_code)]
 fn play_shuffle(playlist: &mut Vec<String>, sink: &Sink) -> io::Result<()> {
     let mut rng = rand::thread_rng();
     playlist.shuffle(&mut rng);
@@ -66,6 +68,27 @@ fn play_shuffle(playlist: &mut Vec<String>, sink: &Sink) -> io::Result<()> {
     Ok(())
 }
 
+//TODO: fix this cursed function
+fn play_song(playlist: &mut Vec<String>, sink: &Sink) -> io::Result<()> {
+    playlist.sort();
+    for audio in playlist.iter() {
+        if Path::new(audio).is_dir() {
+            let album_path = Path::new(audio);
+            let mut album = initialize_playlist(album_path)?;
+            println!(
+                "ALBUM: {}",
+                album_path.file_name().unwrap().to_str().unwrap()
+            );
+            play_song(&mut album, sink)?;
+        }
+        println!(
+            "{}",
+            Path::new(audio).file_name().unwrap().to_str().unwrap()
+        );
+    }
+    Ok(())
+}
+
 fn main() -> io::Result<()> {
     let root = Path::new("/Users/ethan/Music/liquid");
     let mut playlist = initialize_playlist(root)?;
@@ -73,7 +96,8 @@ fn main() -> io::Result<()> {
     let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
     let sink = rodio::Sink::try_new(&handle).unwrap();
 
-    let _ = play_shuffle(&mut playlist, &sink);
+    //let _ = play_shuffle(&mut playlist, &sink);
+    let _ = play_song(&mut playlist, &sink);
 
     Ok(())
 }
